@@ -8,6 +8,7 @@ WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 FPS = 60
 HEIGHT_PADDLE = 60
 WIDTH_PADDLE = 10
+VEL_PADDLE = 5
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
@@ -17,9 +18,18 @@ class Paddle:
         self.y = y
         self.height = HEIGHT_PADDLE
         self.width = WIDTH_PADDLE
+        self.vel = VEL_PADDLE
 
     def draw(self,window):
         pygame.draw.rect(window, WHITE, (self.x, self.y, WIDTH_PADDLE, HEIGHT_PADDLE))
+    
+    def move(self, up, down):
+        if (self.y == 0 and up) or (self.y == HEIGHT-HEIGHT_PADDLE and down):
+            self.y = self.y
+        elif up:
+            self.y -= VEL_PADDLE
+        elif down:
+            self.y += VEL_PADDLE
 
 
 def draw(window, paddle):
@@ -41,6 +51,8 @@ def main(window):
             if event.type == pygame.QUIT:
                 run = False
                 break
+        keys = pygame.key.get_pressed()
+        paddle.move(up=keys[pygame.K_UP], down=keys[pygame.K_DOWN])
         draw(window, paddle)
 
 
