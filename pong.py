@@ -32,9 +32,10 @@ class Paddle:
             self.y += VEL_PADDLE
 
 
-def draw(window, paddle):
+def draw(window, paddles):
     window.fill(BLACK)
-    paddle.draw(window)
+    for paddle in paddles:
+        paddle.draw(window)
     pygame.display.update()
 
     
@@ -43,7 +44,7 @@ def main(window):
     clock = pygame.time.Clock()
     run = True
 
-    paddle = Paddle(50,400)
+    paddles = [Paddle(50,400), Paddle(750,400)]
     
     while run:
         clock.tick(FPS)
@@ -52,8 +53,9 @@ def main(window):
                 run = False
                 break
         keys = pygame.key.get_pressed()
-        paddle.move(up=keys[pygame.K_UP], down=keys[pygame.K_DOWN])
-        draw(window, paddle)
+        paddles[0].move(up=keys[pygame.K_UP], down=keys[pygame.K_DOWN])
+        paddles[1].move(up=keys[pygame.K_w], down=keys[pygame.K_s])
+        draw(window, paddles)
 
 
 if __name__ == "__main__":
