@@ -45,6 +45,10 @@ class Ball:
         pygame.draw.circle(window, COLOUR_BALL, (self.x, self.y), RADIUS_BALL)
 
     def move(self):
+        if self.x == 0 or self.x == HEIGHT - RADIUS_BALL:
+            self.x_vel *= -1
+        if self.y == 0 or self.y == WIDTH - RADIUS_BALL:
+            self.y_vel *= -1
         self.x += self.x_vel
         self.y += self.y_vel
 
