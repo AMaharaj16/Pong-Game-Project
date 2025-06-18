@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 pygame.init()
 pygame.display.set_caption("Pong Game in Python")
@@ -45,12 +46,19 @@ class Ball:
         pygame.draw.circle(window, COLOUR_BALL, (self.x, self.y), RADIUS_BALL)
 
     def move(self):
-        if self.x == 0 or self.x == HEIGHT - RADIUS_BALL:
-            self.x_vel *= -1
-        if self.y == 0 or self.y == WIDTH - RADIUS_BALL:
+        if self.x < 0 or self.x > WIDTH - RADIUS_BALL:
+            self.x = 400
+            self.y = 400
+            time.sleep(3)
+            self.x_vel = random.choice([-3, 3])
+            self.y_vel = random.choice([-3, 3])
+        if self.y < 0 or self.y > HEIGHT - RADIUS_BALL:
             self.y_vel *= -1
         self.x += self.x_vel
         self.y += self.y_vel
+
+    def bounce(self):
+        self.x_vel *= -1.03
 
 def draw(window, paddles, ball):
     window.fill(BLACK)
@@ -59,12 +67,18 @@ def draw(window, paddles, ball):
     ball.draw(window)
     pygame.display.update()
 
+def bounce(ball, leftPaddle, rightPaddle):
+    if (ball.x > 50 and ball.x < 60 and ball.y > leftPaddle.y and ball.y - leftPaddle.y < 60):
+        ball.bounce()
+    if (ball.x < 760 and ball.x > 750 and ball.y > rightPaddle.y and ball.y - rightPaddle.y < 60):
+        ball.bounce()
+
 def main(window):
     clock = pygame.time.Clock()
     run = True
 
     paddles = [Paddle(50,400), Paddle(750,400)]
-    ball = Ball(400,400, random.choice([-2, -1, 1, 2]), random.choice([-2, -1, 1, 2]))
+    ball = Ball(400,400, random.choice([-3, 3]), random.choice([-3, 3]))
     
     while run:
         clock.tick(FPS)
@@ -76,6 +90,7 @@ def main(window):
         paddles[0].move(up=keys[pygame.K_UP], down=keys[pygame.K_DOWN])
         paddles[1].move(up=keys[pygame.K_w], down=keys[pygame.K_s])
         ball.move()
+        bounce(ball, paddles[0], paddles[1])
         draw(window, paddles, ball)
 
 if __name__ == "__main__":
