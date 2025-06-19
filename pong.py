@@ -63,7 +63,7 @@ class Ball:
         self.y += self.y_vel
 
     def bounce(self):
-        self.x_vel *= -1.03
+        self.x_vel *= -1.1
     
     def reset(self):
         self.x = 400
@@ -71,7 +71,7 @@ class Ball:
         self.x_vel = random.choice([-3, -2, 2, 3])
         self.y_vel = random.choice([-3, -2, 2, 3])
 
-def draw(window, paddles, ball, leftScore, rightScore):
+def draw(window, paddles, ball, leftScore, rightScore, run):
     window.fill(BLACK)
     for paddle in paddles:
         paddle.draw(window)
@@ -109,7 +109,7 @@ def draw(window, paddles, ball, leftScore, rightScore):
         return False
 
     pygame.display.update()
-    return True
+    return run
 
 def bounce(ball, leftPaddle, rightPaddle):
     if (ball.x > 50 and ball.x < 60 and ball.y > leftPaddle.y and ball.y - leftPaddle.y < 60):
@@ -157,12 +157,15 @@ def main(window):
                 run = False
                 break
         keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            run = False
+            break
         paddles[0].move(up=keys[pygame.K_UP], down=keys[pygame.K_DOWN])
         paddles[1].move(up=keys[pygame.K_w], down=keys[pygame.K_s])
         ball.move()
         bounce(ball, paddles[0], paddles[1])
         leftScore, rightScore = goal_check(ball, paddles[0], paddles[1], leftScore, rightScore)
-        run = draw(window, paddles, ball, leftScore, rightScore)
+        run = draw(window, paddles, ball, leftScore, rightScore, run)
         
 
 if __name__ == "__main__":
