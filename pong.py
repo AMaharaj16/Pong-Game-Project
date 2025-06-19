@@ -66,7 +66,6 @@ class Ball:
         self.x_vel *= -1.03
     
     def reset(self):
-        time.sleep(3)
         self.x = 400
         self.y = 400
         self.x_vel = random.choice([-3, -2, 2, 3])
@@ -90,7 +89,27 @@ def draw(window, paddles, ball, leftScore, rightScore):
     text1.center = (750, 50)
     WINDOW.blit(Rscore, text1)
 
+    if leftScore == 5:
+        font = pygame.font.Font('freesansbold.ttf', 50)
+        finalscore = font.render('Left Wins: ' + str(leftScore) + '-' + str(rightScore), True, green, blue)
+        text = finalscore.get_rect()
+        text.center = (400, 400)
+        WINDOW.blit(finalscore, text)
+        pygame.display.update()
+        time.sleep(5)
+        return False
+    elif rightScore == 5:
+        font = pygame.font.Font('freesansbold.ttf', 50)
+        finalscore = font.render('Right Wins: ' + str(leftScore) + '-' + str(rightScore), True, green, blue)
+        text = finalscore.get_rect()
+        text.center = (400, 400)
+        WINDOW.blit(finalscore, text)
+        pygame.display.update()
+        time.sleep(5)
+        return False
+
     pygame.display.update()
+    return True
 
 def bounce(ball, leftPaddle, rightPaddle):
     if (ball.x > 50 and ball.x < 60 and ball.y > leftPaddle.y and ball.y - leftPaddle.y < 60):
@@ -99,13 +118,22 @@ def bounce(ball, leftPaddle, rightPaddle):
         ball.bounce()
 
 def goal_check(ball, leftPaddle, rightPaddle, leftScore, rightScore):
-    if ball.x < 0:
+    scoreChange = False
+    if ball.x < 0 and rightScore < 4:
         rightScore += 1
-        ball.reset()
-        leftPaddle.reset(True)
-        rightPaddle.reset(False)
+        time.sleep(3)
+        scoreChange = True
+    elif ball.x < 0:
+        rightScore += 1
+        scoreChange = True
+    elif ball.x > 800 and leftScore < 4:
+        leftScore += 1
+        time.sleep(3)
+        scoreChange = True
     elif ball.x > 800:
         leftScore += 1
+        scoreChange = True
+    if scoreChange:
         ball.reset()
         leftPaddle.reset(True)
         rightPaddle.reset(False)
@@ -134,7 +162,7 @@ def main(window):
         ball.move()
         bounce(ball, paddles[0], paddles[1])
         leftScore, rightScore = goal_check(ball, paddles[0], paddles[1], leftScore, rightScore)
-        draw(window, paddles, ball, leftScore, rightScore)
+        run = draw(window, paddles, ball, leftScore, rightScore)
         
 
 if __name__ == "__main__":
