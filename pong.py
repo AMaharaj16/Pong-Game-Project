@@ -34,6 +34,15 @@ class Paddle:
             self.y -= VEL_PADDLE
         elif down:
             self.y += VEL_PADDLE
+    
+    def reset(self, leftPaddle):
+        if leftPaddle:
+            self.x = 50
+            self.y = 400
+        else:
+            self.x = 750
+            self.y = 400
+
 
 class Ball:
     def __init__(self, x, y, x_vel, y_vel):
@@ -46,12 +55,6 @@ class Ball:
         pygame.draw.circle(window, COLOUR_BALL, (self.x, self.y), RADIUS_BALL)
 
     def move(self):
-        if self.x < 0 or self.x > WIDTH - RADIUS_BALL:
-            self.x = 400
-            self.y = 400
-            time.sleep(3)
-            self.x_vel = random.choice([-3, 3])
-            self.y_vel = random.choice([-3, 3])
         if self.y < 0 or self.y > HEIGHT - RADIUS_BALL:
             self.y_vel *= -1
         self.x += self.x_vel
@@ -59,6 +62,13 @@ class Ball:
 
     def bounce(self):
         self.x_vel *= -1.03
+    
+    def reset(self):
+        time.sleep(3)
+        self.x = 400
+        self.y = 400
+        self.x_vel = random.choice([-3, -2, 2, 3])
+        self.y_vel = random.choice([-3, -2, 2, 3])
 
 def draw(window, paddles, ball):
     window.fill(BLACK)
@@ -72,13 +82,19 @@ def bounce(ball, leftPaddle, rightPaddle):
         ball.bounce()
     if (ball.x < 760 and ball.x > 750 and ball.y > rightPaddle.y and ball.y - rightPaddle.y < 60):
         ball.bounce()
+    
+def goal_check(ball, leftPaddle, rightPaddle):
+    if ball.x < 0 or ball.x > 800:
+        ball.reset()
+        leftPaddle.reset(True)
+        rightPaddle.reset(False)
 
 def main(window):
     clock = pygame.time.Clock()
     run = True
 
     paddles = [Paddle(50,400), Paddle(750,400)]
-    ball = Ball(400,400, random.choice([-3, 3]), random.choice([-3, 3]))
+    ball = Ball(400,400, random.choice([-3, -2, 2, 3]), random.choice([-3,-2, 2, 3]))
     
     while run:
         clock.tick(FPS)
@@ -91,6 +107,7 @@ def main(window):
         paddles[1].move(up=keys[pygame.K_w], down=keys[pygame.K_s])
         ball.move()
         bounce(ball, paddles[0], paddles[1])
+        goal_check(ball, paddles[0], paddles[1])
         draw(window, paddles, ball)
 
 if __name__ == "__main__":
