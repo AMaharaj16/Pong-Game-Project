@@ -107,7 +107,7 @@ def main(window):
         paddles[1].move(up=keys[pygame.K_w], down=keys[pygame.K_s])
         ball.move()
         bounce(ball, paddles[0], paddles[1])
-        goal_check(ball, paddles[0], paddles[1], rightScore, leftScore)
+        goal_check(ball, paddles[0], paddles[1])
         draw(window, paddles, ball)
 
 if __name__ == "__main__":
