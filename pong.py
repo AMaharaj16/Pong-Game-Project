@@ -34,7 +34,7 @@ class Paddle:
             self.y -= VEL_PADDLE
         elif down:
             self.y += VEL_PADDLE
-    
+
     def reset(self, leftPaddle):
         if leftPaddle:
             self.x = 50
@@ -107,7 +107,7 @@ def main(window):
         paddles[1].move(up=keys[pygame.K_w], down=keys[pygame.K_s])
         ball.move()
         bounce(ball, paddles[0], paddles[1])
-        goal_check(ball, paddles[0], paddles[1])
+        goal_check(ball, paddles[0], paddles[1], rightScore, leftScore)
         draw(window, paddles, ball)
 
 if __name__ == "__main__":
