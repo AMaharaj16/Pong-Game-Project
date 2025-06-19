@@ -15,6 +15,8 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RADIUS_BALL = 6
 COLOUR_BALL = (255, 20, 147)
+green = (0, 255, 0)
+blue = (0, 0, 128)
 
 class Paddle:
     def __init__(self, x, y):
@@ -70,11 +72,24 @@ class Ball:
         self.x_vel = random.choice([-3, -2, 2, 3])
         self.y_vel = random.choice([-3, -2, 2, 3])
 
-def draw(window, paddles, ball):
+def draw(window, paddles, ball, leftScore, rightScore):
     window.fill(BLACK)
     for paddle in paddles:
         paddle.draw(window)
     ball.draw(window)
+    font = pygame.font.Font('freesansbold.ttf', 32)
+
+
+    Lscore = font.render(str(leftScore), True, green, blue)
+    text = Lscore.get_rect()
+    text.center = (50, 50)
+    WINDOW.blit(Lscore, text)
+
+    Rscore = font.render(str(rightScore), True, green, blue)
+    text1 = Rscore.get_rect()
+    text1.center = (750, 50)
+    WINDOW.blit(Rscore, text1)
+
     pygame.display.update()
 
 def bounce(ball, leftPaddle, rightPaddle):
@@ -82,12 +97,19 @@ def bounce(ball, leftPaddle, rightPaddle):
         ball.bounce()
     if (ball.x < 760 and ball.x > 750 and ball.y > rightPaddle.y and ball.y - rightPaddle.y < 60):
         ball.bounce()
-    
-def goal_check(ball, leftPaddle, rightPaddle):
-    if ball.x < 0 or ball.x > 800:
+
+def goal_check(ball, leftPaddle, rightPaddle, leftScore, rightScore):
+    if ball.x < 0:
+        rightScore += 1
         ball.reset()
         leftPaddle.reset(True)
         rightPaddle.reset(False)
+    elif ball.x > 800:
+        leftScore += 1
+        ball.reset()
+        leftPaddle.reset(True)
+        rightPaddle.reset(False)
+    return leftScore, rightScore
 
 def main(window):
     clock = pygame.time.Clock()
@@ -95,9 +117,13 @@ def main(window):
 
     paddles = [Paddle(50,400), Paddle(750,400)]
     ball = Ball(400,400, random.choice([-3, -2, 2, 3]), random.choice([-3,-2, 2, 3]))
+    leftScore = 0
+    rightScore = 0
+    font = pygame.font.Font('freesansbold.ttf', 50)
     
     while run:
         clock.tick(FPS)
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -107,8 +133,9 @@ def main(window):
         paddles[1].move(up=keys[pygame.K_w], down=keys[pygame.K_s])
         ball.move()
         bounce(ball, paddles[0], paddles[1])
-        goal_check(ball, paddles[0], paddles[1])
-        draw(window, paddles, ball)
+        leftScore, rightScore = goal_check(ball, paddles[0], paddles[1], leftScore, rightScore)
+        draw(window, paddles, ball, leftScore, rightScore)
+        
 
 if __name__ == "__main__":
     main(WINDOW)
