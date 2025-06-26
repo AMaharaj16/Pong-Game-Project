@@ -160,8 +160,8 @@ def main(window):
         if keys[pygame.K_ESCAPE]:
             run = False
             break
-        paddles[0].move(up=keys[pygame.K_UP], down=keys[pygame.K_DOWN])
-        paddles[1].move(up=keys[pygame.K_w], down=keys[pygame.K_s])
+        paddles[0].move(up=keys[pygame.K_w], down=keys[pygame.K_s])
+        paddles[1].move(up=keys[pygame.K_UP], down=keys[pygame.K_DOWN])
         ball.move()
         bounce(ball, paddles[0], paddles[1])
         leftScore, rightScore = goal_check(ball, paddles[0], paddles[1], leftScore, rightScore)
